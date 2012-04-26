@@ -1,0 +1,231 @@
+#!/bin/bash
+# fetchnews 1.0b
+
+#set -veux
+
+calibrePath="/home/speendo/calibre/"
+
+## help text
+help="
+fetchnews is a script based on calibre to download news from newspaper websites
+and store them as .epub-files. This script is intended to be used in cronjobs.
+Besides .epub-files, also .opf-files will be created for later use. This script
+also provides options to clear old newspapers (see below).
+
+You should consider running this script inside a \"timeout\" command, like
+
+$ timeout 5m fetchnews [options] file
+
+as the download-process might become stuck unintentionally - maybe caused by
+the newspaper website. Checkout \"man timeout\" for more information.
+
+Usage
+=====
+
+$ fetchnews [options] file
+
+
+Options
+=======
+
+  -t            marks the generated files as temporary
+                They will be deleted, the next time this script runs with the
+                option \"-c\"
+
+  -c            clear temporary files
+                All files generated with option \"-t\" in the directory will
+                be deleted. See option \"-d\" on how this script chooses the
+                directory to search for temporary files
+
+  -o days       clear old files
+                All .epub-files and .opf files older than <days> will be
+                deleted
+
+  -f file       path to calibre .recipe-file
+                You can also specify the path without \"-f\" by using 
+                \"fetchnews [options] file\"
+
+  -d directory  folder to store created files inside
+                If not specified, the name of the .recipe-file would be used
+
+  -p path       path to calibre-folder
+                if not specified in \"settings.conf\" file and not specified
+                as an option, \"/opt/calibre\" will be used per default
+
+  -h            Print this help text
+"
+
+## set timeStamp=current time
+timeStamp=$(date +%a-%F-%H-%M)
+
+## get directory of script
+scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+## set tempFile=false
+tempFile=false
+clearDir=false
+clearOldDays=-1
+maxExecutionTime=-1
+
+## get options
+while getopts ":f:d:p:o:m:tch" options
+do
+	case $options in
+		f ) fileName=$OPTARG
+		;;
+		d ) directory=$OPTARG
+		;;
+		p ) calibrePath=$OPTARG
+		;;
+		o ) clearOldDays=$OPTARG
+		;;
+		t ) tempFile=true
+		;;
+		c ) clearDir=true
+		;;
+		h ) echo "$help"
+		exit 0
+		;;
+		\? ) echo "$help"
+	        exit 1
+	        ;;
+	esac
+done
+
+shift $(($OPTIND - 1))
+
+## get filename (if not provided before)
+if [ ! "$fileName" ]
+then
+	fileName=$1
+fi
+## if still $1 didn't contain a filename aswell we have to quit
+if [ "$fileName" == "" ]
+then
+	echo "No file name provided! Please specify a file name!" >&2
+	echo "$help"
+	exit 1
+fi
+
+## check $calibrePath
+if [ "$calibrePath" == "" ]
+then
+	calibrePath="/opt/calibre"
+fi
+
+if [ ! -f "$calibrePath/ebook-convert" ]
+then
+	echo "The specified path to calibre seems to be wrong! Cannot find \"ebook-convert\" at $calibrePath /ebook-convert!" >&2
+	echo "$help"
+	exit 1
+fi
+
+if [ ! -f "$calibrePath/ebook-meta" ]
+then
+	echo "The specified path to calibre seems to be wrong! Cannot find \"ebook-meta\" at $calibrePath /ebook-meta!" >&2
+	echo "$help"
+	exit 1
+fi
+
+## check if the recipe exists
+if [ ! -f "$fileName" ]
+then
+	if [ -f "$fileName.recipe" ]
+	then
+		fileName="$fileName.recipe"
+## file doesn't exist
+	else
+## check if there is a built-in recipe with that name
+		builtin=$($calibrePath/ebook-convert --list-recipes | grep ${fileName%.*} | sed -e 's/^[ \t]*//')
+		if [ "$builtin" == "${fileName%.*}" ]
+		then
+			if [ "${fileName##*.}" != "recipe" ]
+			then
+				fileName="$fileName.recipe"
+			fi
+		else
+			echo "ERROR: \"$fileName\" does not exist! Please specify a valid .recipe-file!" >&2
+			echo "$help"
+			exit 1
+		fi
+	fi
+fi
+
+## split $fileName
+baseFileName="$(basename $fileName)"
+extension="${baseFileName##*.}"
+storeFileName="${baseFileName%.*}"
+
+## set $directory if not specified in user input
+if [ "$directory" ]
+then
+	directory="${directory%/}"
+	
+	if [ ! -d "$directory" ]
+	then
+		existDir="${directory%/*}"
+		if [ ! -d "$existDir" ]
+		then
+			echo "ERROR: Directory \"$existDir/\" does not exist! Please make sure the whole path (or at least everything but the lowest directory) does exist!"
+			exit 1
+		fi
+	fi
+else
+	directory="$storeFileName"
+fi
+
+## check if file is a *.recipe file
+if [ "$extension" != "recipe" ]
+then
+	echo "ERROR: \"$fileName\" is not a .recipe-file! Please specify a valid .recipe-file!" >&2
+	echo "$help"
+	exit 1
+fi
+
+## everything seems alright, let's begin
+
+## create a folder if it doesn't exist yet
+if [ ! -d "$directory" ]
+then
+	mkdir "$directory"
+fi
+
+## let calibre do it's work
+echo $calibrePath"ebook-convert "$fileName $directory/$storeFileName-$timeStamp.epub > /dev/null
+
+${calibrePath}ebook-convert $fileName $directory/$storeFileName-$timeStamp.epub > /dev/null
+${calibrePath}ebook-meta $directory/$storeFileName-$timeStamp.epub --to-opf=$directory"/"$storeFileName-$timeStamp.opf > /dev/null
+
+## if option "-c" was passed, remove all temporary files in corresponding folder 
+## it's important to do this before option -t and after the file-generation
+if $clearDir
+then
+	if [ -x "$scriptDir/cleartempnews" ]
+	then
+		$scriptDir/cleartempnews $directory
+	else
+		echo "ERROR: The file \"cleartempnews\" is not present in the same directory as \"fetchnews\" or is not executable! Please make sure \"cleartempnews\" is present in the same directory as \"fetchnews\" and is executable!"
+		exit 1
+	fi
+fi
+
+## if option "-t" was passed, add a comment to the opf to find corresponding files later
+if $tempFile
+then
+	sed -i '/<?xml .*?>/a \<!-- fetchnews: temporary file -->' "$directory"/"$storeFileName""-""$timeStamp"".opf"
+fi
+
+## if option "-o" was passed, clear old files in the directory
+if [ $clearOldDays -ge 0 ]
+then
+	if [ -x "$scriptDir/clearoldnews" ]
+	then
+		$scriptDir/clearoldnews $directory $clearOldDays
+	else
+		echo "ERROR: The file \"clearoldnews\" is not present in the same directory as \"fetchnews\" or is not executable! Please make sure \"clearoldnews\" is present in the same directory as \"fetchnews\" and is executable!"
+		exit 1
+	fi
+fi
+
+exit 0
+#EOF

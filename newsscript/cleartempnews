@@ -1,0 +1,73 @@
+#!/bin/bash
+## help text
+help="
+cleartempnews deletes all *.epub- and *.opf-files that were generated with
+\"fetchnews -t\" in the specified folder. In other words, all files generated
+with fetchnews as temporary files in the specified folder will be deleted.
+
+ATTENTION: Use this script with care, as there will be no more warning before
+execution!
+
+
+Usage
+=====
+
+$ cleartempnews <directory>
+
+Example
+=======
+
+$ cleartempnews /tmp
+## all .opf-files and corresponding .epub-files will be deleted, if the .opf
+## file has the line \"<!-- fetchnews: temporary file -->\" in it.
+
+Options
+=======
+
+  -h       Print this help text
+"
+
+while getopts "h" options
+do
+	case $options in
+		h ) echo "$help"
+		exit 0
+		;;
+		\? ) echo "$help"
+		exit 1
+		;;
+	esac
+done
+
+shift $(($OPTIND - 1))
+
+# check if a directory was provided
+if [ $# -le 0 ]
+then
+	echo "No directory provided. Please provide the directory!"
+	echo "$help"
+	exit 1
+fi
+
+# check if too many arguments were provided
+if [ $# -ge 2 ]
+then
+	echo "Too many parameters provided. Please just provide the directory!"
+	echo "$help"
+	exit 1
+fi
+
+directory="$1"
+
+# make sure last character of directory is "/"
+directory="${directory%/}"
+directory="$directory/"
+
+if [ ! -d "$directory" ]
+then
+	echo "Directory does not exist. Please enter a valid directory!"
+	echo "$help"
+	exit 1
+fi
+
+grep --null -l '<!-- fetchnews: temporary file -->' "$directory"*.opf | xargs -0 -I{} bash -c 'rm "$1" "${1%.*}.epub"' -- {}

@@ -1,0 +1,91 @@
+#!/bin/bash
+
+## help text
+help="
+clearoldnews deletes all *.epub- and *.opf-files older than <days> in folder
+<directory>. This script works recursively, so also files in subdirectories
+older than <days> will be removed.
+
+ATTENTION: Use this script with care, as there will be no more warning before
+execution!
+
+
+Usage
+=====
+
+$ clearoldnews <directory> <days>
+
+Example
+=======
+
+$ clearoldnews /tmp 30
+## all .epub- and .opf-files in \"/tmp\" older than 30 days are deleted
+
+Options
+=======
+
+  -h       Print this help text
+"
+
+while getopts "h" options
+do
+	case $options in
+		h ) echo "$help"
+		exit 0
+		;;
+		\? ) echo "$help"
+	        exit 1
+	        ;;
+	esac
+done
+
+shift $(($OPTIND - 1))
+
+directory="$1"
+
+days="$2"
+
+if [ $directory == "" ]
+then
+	echo "No directory provided. Please provide the directory!"
+	echo "$help"
+	exit 1
+fi
+
+if [ $days == "" ]
+then
+	echo "No number of days provided. Please provide a number of days!"
+	echo "$help"
+	exit 1
+fi
+
+# check if too many arguments were provided
+if [ $# -ge 3 ]
+then
+	echo "Too many parameters provided!"
+	echo "$help"
+	exit 1
+fi
+
+# make sure last character of directory is "/"
+directory="${directory%/}"
+directory="$directory/"
+
+if [ ! -d "$directory" ]
+then
+	echo "Directory does not exist. Please enter a valid directory!"
+	echo "$help"
+	exit 1
+fi
+
+if [ $days -ge 0 ]
+then
+	find "$directory" -type f \( -iname "*.epub" -o -iname "*.opf" \) -mtime +"$days" -exec rm {} \;
+else
+	echo "Enter a number of days greater or equal to zero!"
+	echo "$help"
+	exit 1
+fi
+
+exit 0
+#EOF
