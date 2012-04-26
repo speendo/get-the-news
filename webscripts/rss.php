@@ -154,8 +154,10 @@ foreach($fileArray as $strFile) {
 $lastArticle = $cArticles - 1;
 $firstArticle = 0;
 
-if ($lastArticle >= $rssMaxItems) {
-	$firstArticle = $lastArticle - ($rssMaxItems - 1);
+if ($rssMaxItems > 0) {
+	if ($lastArticle >= $rssMaxItems) {
+		$firstArticle = $lastArticle - ($rssMaxItems - 1);
+	}
 }
 
 ###########################################################################
@@ -180,11 +182,16 @@ echo "    <lastBuildDate>$rssDate</lastBuildDate>\r\n";
 echo "    <generator>$rssGenerator</generator>\r\n";
 echo "    <ttl>$rssTtl</ttl>\r\n";
 echo "    <atom:link href=\"" . $folderURL . "rss.php\" rel=\"self\" type=\"application/rss+xml\" />\r\n";
-echo "    <image>\r\n";
-echo "      <url>$rssLogo</url>\r\n";
-echo "      <title>$title</title>\r\n";
-echo "      <link>$rssURL</link>\r\n";
-echo "    </image>\r\n";
+if ($rssLogo != "") {
+	echo "    <image>\r\n";
+	echo "      <url>$rssLogo</url>\r\n";
+	echo "      <title>$title</title>\r\n";
+	echo "      <link>$rssURL</link>\r\n";
+	echo "    </image>\r\n";
+}
+if ($rssIcon != "") {
+	echo "    <icon>$rssIcon</icon>\r\n";
+}
 
 ###########################################################################
 ### The feed's heart ;-)
