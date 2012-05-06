@@ -23,17 +23,27 @@
 ###########################################################################
 ### User Settings
 ###########################################################################
-$rssLanguage    = "de";
-$rssCopyright   = "Marcel";
+## RSS-Language (in the feeds head, "en" for english)
+$rssLanguage    = "";
+## RSS-Copyright (you can enter your name here)
+$rssCopyright   = "";
+## RSS-Generator (change if desired)
 $rssGenerator   = "get-the-news";
+## RSS-Time-to-live (interval to refresh feed)
 $rssTtl         = "180";
-#improve me
-$rssLogo        = "http://marcel.suuf.cc/img/Newspaper_Feed.png";
-$rssIcon        = "http://marcel.suuf.cc/img/Newspaper_Feed.ico";
-$rssURL         = "http://suuf.cc/";
+## Path to RSS-logo (png, gif, jpg, etc. you could also leave this empty)
+$rssLogo        = "";
+## Path to RSS-icon (ico, jpg, etc. you could also leave this empty)
+$rssIcon        = "";
+## RSS-URL
+$rssURL         = "";
+## Max items in feed (0 for no limit)
 $rssMaxItems    = 200;
+## style sheet (not working yet)
 $styleSheet     = "http://www.petefreitag.com/rss/simple_style.css";
-$encryptionKey  = "bla";
+## Encryption key for download-links
+## (you could leave this empty, but you shouldn't!)
+$encryptionKey  = "encryptionKey";
 ###########################################################################
 ### End
 ###########################################################################

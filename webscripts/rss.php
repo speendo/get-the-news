@@ -165,7 +165,13 @@ if ($rssMaxItems > 0) {
 ###########################################################################
 header('Content-Type: application/xml');
 echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\r\n";
-echo "<?xml-stylesheet type=\"text/css\" href=\"$styleSheet\" ?>\r\n";
+if ($styleSheet != "") {
+	if (substr_compare($styleSheet, ".css", -4, 4, true) == 0) {
+		echo "<?xml-stylesheet type=\"text/css\" href=\"$styleSheet\" ?>\r\n";
+	} elseif (substr_compare($styleSheet, ".xsl", -4, 4, true) == 0){
+		echo "<?xml-stylesheet type=\"text/xsl\" href=\"$styleSheet\" ?>\r\n";
+	}
+}
 echo "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\r\n";
 echo "  <channel>\r\n";
 
