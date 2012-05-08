@@ -33,7 +33,7 @@ include("settings.php");
 ### General Settings
 ###########################################################################
 $folderPath = __DIR__ . "/";
-$folderURL  = curRootURL() . "/";
+$folderURL  = dirname(curPageURL()) . "/";
 $rssDate    = date("r", time());
 @$feed      = $_GET['feed'];
 @$extension = $_GET['ext'];
@@ -215,19 +215,6 @@ echo "</rss>\r\n";
 ###########################################################################
 ### Helper Functions
 ###########################################################################
-function curRootURL() {
-	$rootURL = 'http';
-	if ($_SERVER["HTTPS"] == "on") {
-		$rootURL .= "s";
-	}
-	$rootURL .= "://";
-	if ($_SERVER["SERVER_PORT"] != "80") {
-		$rootURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"];
-	} else {
- 		$rootURL .= $_SERVER["SERVER_NAME"];
-	}
-	return $rootURL;
-}
 
 function str_lreplace($search, $replace, $subject) {
 	$pos = strrpos($subject, $search);
@@ -240,15 +227,17 @@ function str_lreplace($search, $replace, $subject) {
 }
 
 function curPageURL() {
- $pageURL = 'http';
- if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
- $pageURL .= "://";
- if ($_SERVER["SERVER_PORT"] != "80") {
-  $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
- } else {
-  $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
- }
- return $pageURL;
+	$pageURL = 'http';
+	if ($_SERVER["HTTPS"] == "on") {
+		$pageURL .= "s";
+	}
+	$pageURL .= "://";
+	if ($_SERVER["SERVER_PORT"] != "80") {
+		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+	} else {
+		$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+	}
+	return $pageURL;
 }
 
 function sort_desc_by_mtime($file1, $file2) {

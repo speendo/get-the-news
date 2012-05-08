@@ -24,8 +24,6 @@
 
 #set -veux
 
-source settings
-
 ## help text
 help="
 fetchnews is a script based on calibre to download news from newspaper websites
@@ -81,6 +79,9 @@ timeStamp=$(date +%a-%F-%H-%M)
 
 ## get directory of script
 scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+## get the settings file
+source "$scriptDir/settings"
 
 ## set tempFile=false
 tempFile=false
@@ -214,8 +215,8 @@ fi
 ## let calibre do it's work
 echo $calibrePath"ebook-convert "$fileName $directory/$storeFileName-$timeStamp.epub > /dev/null
 
-${calibrePath}ebook-convert $fileName $directory/$storeFileName-$timeStamp.epub > /dev/null
-${calibrePath}ebook-meta $directory/$storeFileName-$timeStamp.epub --to-opf=$directory"/"$storeFileName-$timeStamp.opf > /dev/null
+${calibrePath}/ebook-convert $fileName $directory/$storeFileName-$timeStamp.epub > /dev/null
+${calibrePath}/ebook-meta $directory/$storeFileName-$timeStamp.epub --to-opf=$directory"/"$storeFileName-$timeStamp.opf > /dev/null
 
 ## if option "-c" was passed, remove all temporary files in corresponding folder 
 ## it's important to do this before option -t and after the file-generation
