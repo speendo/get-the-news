@@ -31,6 +31,8 @@ $rssDate    = date("r", time());
 @$feed      = $_GET['feed'];
 @$extension = $_GET['ext'];
 
+$mimeType = "application/epub+zip"; // because it's an .epub in this case
+
 ###########################################################################
 ### Computed Variables
 ###########################################################################
