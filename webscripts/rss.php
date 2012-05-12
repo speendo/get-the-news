@@ -89,7 +89,7 @@ $lArticles = array();
 $cArticles = 0;
 
 $fileArray = glob($searchStatement);
-usort($fileArray, "sort_desc_by_mtime");
+usort($fileArray, "asc_desc_by_mtime");
 
 foreach($fileArray as $strFile) {
 	$cArticles++;
@@ -240,7 +240,7 @@ function curPageURL() {
 	return $pageURL;
 }
 
-function sort_desc_by_mtime($file1, $file2) {
+function sort_asc_by_mtime($file1, $file2) {
 	return (filemtime($file1) - filemtime($file2));
 }
 

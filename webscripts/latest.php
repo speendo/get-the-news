@@ -106,7 +106,7 @@ function curPageURL() {
 }
 
 function sort_desc_by_mtime($file1, $file2) {
-	return (filemtime($file1) - filemtime($file2));
+	return (filemtime($file2) - filemtime($file1));
 }
 
 function encrypt($string, $encryptionKey) {
