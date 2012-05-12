@@ -76,7 +76,7 @@ $newestFile = array_slice($fileArray, 0, 1);
 $newestFile = $newestFile[0];
 
 ## Link
-$link = $folderURL . "download.php?path=" . urlencode(encrypt($newestFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
+$link = $folderURL . "download.php?path=" . urlencode(encrypt($newestFile, $encryptionKey)) . "&mimeType=" . urlencode($mimeType);
 
 header("Location: $link");
 ###########################################################################
