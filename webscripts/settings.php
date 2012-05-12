@@ -40,7 +40,7 @@ $rssURL         = "";
 ## Max items in feed (0 for no limit)
 $rssMaxItems    = 200;
 ## style sheet (not working yet)
-$styleSheet     = "http://www.petefreitag.com/rss/simple_style.css";
+$styleSheet     = "";
 ## Encryption key for download-links
 ## (you could leave this empty, but you shouldn't!)
 $encryptionKey  = "encryptionKey";
