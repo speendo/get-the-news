@@ -26,7 +26,7 @@ include("settings.php");
 ### General Settings
 ###########################################################################
 $folderPath = __DIR__ . "/";
-$folderURL  = curRootURL() . "/";
+$folderURL  = dirname(curPageURL()) . "/";
 $rssDate    = date("r", time());
 @$feed      = $_GET['feed'];
 @$extension = $_GET['ext'];
@@ -82,19 +82,6 @@ header("Location: $link");
 ###########################################################################
 ### Helper Functions
 ###########################################################################
-function curRootURL() {
-	$rootURL = 'http';
-	if ($_SERVER["HTTPS"] == "on") {
-		$rootURL .= "s";
-	}
-	$rootURL .= "://";
-	if ($_SERVER["SERVER_PORT"] != "80") {
-		$rootURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"];
-	} else {
- 		$rootURL .= $_SERVER["SERVER_NAME"];
-	}
-	return $rootURL;
-}
 
 function str_lreplace($search, $replace, $subject) {
 	$pos = strrpos($subject, $search);
