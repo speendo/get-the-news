@@ -43,6 +43,7 @@ if(!file_exists($path)) {
 	header("Content-Type: $mimeType");
 	header("Content-Transfer-Encoding: binary");
 	header("Content-Length: $size");
+	header("Connection: Keep-Alive");
 	// Read the file from disk
 	readfile($path);
 }
