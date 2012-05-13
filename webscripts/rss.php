@@ -129,7 +129,12 @@ foreach($fileArray as $strFile) {
 	}
 
 	## Article Link
-	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
+	if (isRestrictedArea()) {
+		$authFolderURL = preg_replace('/:\/\//', '://' . $_SERVER['PHP_AUTH_USER'] . ':' . $_SERVER['PHP_AUTH_PW'] . '%40', $folderUrl, 1);
+		$strLink = $authFolderURL . "download.php?path=" . urlencode(encrypt($strFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
+	} else {
+		$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
+	}
 	
 	# The Feeds last update
 	$rssDate = $strPubDate;

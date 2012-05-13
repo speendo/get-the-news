@@ -118,4 +118,12 @@ function startDownload($path) {
 
 	exit();
 }
+
+function isRestrictedArea() {
+	if ($_SERVER['PHP_AUTH_PW'] == "") {
+		return false;
+	} else {
+		return true;
+	}
+}
 ?>
