@@ -19,9 +19,8 @@
 ### You should have received a copy of the GNU General Public License
 ### along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###########################################################################
-include("functions.php");
 
-include("settings.php");
+include("functions.php");
 
 ###########################################################################
 ### General Settings
@@ -76,8 +75,6 @@ usort($fileArray, "sort_desc_by_mtime");
 $newestFile = array_slice($fileArray, 0, 1);
 $newestFile = $newestFile[0];
 
-## Link
-$link = $folderURL . "download.php?path=" . urlencode(encrypt($newestFile, $encryptionKey)) . "&mimeType=" . urlencode($mimeType);
-
-header("Location: $link");
+## start download
+startDownload($newestFile);
 ?>

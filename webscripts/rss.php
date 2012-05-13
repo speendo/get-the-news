@@ -26,9 +26,8 @@
 ### * RSS Feed Folder (http://www.rssfeedfolder.com/)
 ###    A lot of this script was inspired by their work.
 ###########################################################################
-include("functions.php");
 
-include("settings.php");
+include("functions.php");
 
 ###########################################################################
 ### General Settings
