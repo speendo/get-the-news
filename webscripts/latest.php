@@ -76,5 +76,5 @@ $newestFile = array_slice($fileArray, 0, 1);
 $newestFile = $newestFile[0];
 
 ## start download
-startDownload($newestFile);
+startDownload($newestFile, $mimeType);
 ?>

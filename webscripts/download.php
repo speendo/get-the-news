@@ -26,6 +26,6 @@ include("settings.php");
 $path = decrypt($_GET['path'], $encryptionKey);
 $mimeType = $_GET['mimeType'];
 
-startDownload($path);
+startDownload($path, $mimeType);
 
 ?>

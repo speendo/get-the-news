@@ -94,7 +94,7 @@ function decrypt($string, $encryptionKey) {
 	}
 }
 
-function startDownload($path) {
+function startDownload($path, $mimeType) {
 	if(!file_exists($path)) {
 		// File doesn't exist, output error
 		exit('file not found');
