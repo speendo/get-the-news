@@ -129,9 +129,9 @@ foreach($fileArray as $strFile) {
 	}
 
 	## Article Link
-	if (isRestrictedArea()) {
-		$authFolderURL = preg_replace('/:\/\//', '://' . $_SERVER['PHP_AUTH_USER'] . ':' . $_SERVER['PHP_AUTH_PW'] . '%40', $folderUrl, 1);
-		$strLink = $authFolderURL . "download.php?path=" . urlencode(encrypt($strFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
+	if (isRestrictedArea) {
+		$authFolderURL = parse_url($folderURL);
+		$strLink = $authFolderURL[scheme] . "://" . urlencode($_SERVER['PHP_AUTH_USER']) . ":" . urlencode($_SERVER['PHP_AUTH_PW']) . "@" . $authFolderURL[host] . $authFolderURL[path] . "download.php?path=" . urlencode(encrypt($strFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
 	} else {
 		$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
 	}
