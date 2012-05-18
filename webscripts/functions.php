@@ -141,7 +141,7 @@ function passPhraseForm($completeURL) {
 		\n
 		</body>\n
 		</html>\n
-")
+	");
 }
 
 function checkPassPhrase() {
