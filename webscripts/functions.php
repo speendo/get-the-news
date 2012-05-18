@@ -71,7 +71,6 @@ function encrypt($string, $encryptionKey) {
 			$char = chr(ord($char)+ord($keychar));
 			$result.=$char;
 		}
-
 		return base64_encode($result);
 	}
 }
@@ -89,8 +88,7 @@ function decrypt($string, $encryptionKey) {
 			$char = chr(ord($char)-ord($keychar));
 			$result.=$char;
 		}
-
-	return $result;
+		return $result;
 	}
 }
 
@@ -119,11 +117,38 @@ function startDownload($path, $mimeType) {
 	exit();
 }
 
-function isRestrictedArea() {
-	if ($_SERVER['PHP_AUTH_PW'] == "") {
-		return false;
-	} else {
-		return true;
-	}
+function isPassPhraseCorrect($inputPhrase) {
+	return $inputPhrase == $passPhrase;
 }
+
+function passPhraseForm($completeURL) {
+	echo("
+		\"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n
+		\"http://www.w3.org/TR/html4/strict.dtd\">\n
+		<html>\n
+		<head>\n
+		<title>Eingabefelder für Passwörter</title>\n
+		</head>\n
+		<body>\n
+		\n
+		<h1>Nur nicht auf die Tastatur gucken lassen ... :-)</h1>\n
+		\n
+		<form action=\"$completeURL\" method=\"get\">\n
+		<p>Kennwort:<br><input name=\"pass\" type=\"password\" size=\"20\" maxlength=\"40\"></p>\n
+		</form>\n
+		\n
+		<input type=\"submit\" value=\" Submit \">\n
+		\n
+		</body>\n
+		</html>\n
+")
+}
+
+function checkPassPhrase() {
+if (!isPassPhraseCorrect($inputPhrase)) {
+	$completeURL = curPageURL() . "?feed=" . $feed . "&ext=" . $extension;
+	passPhraseForm($completeURL);
+	exit();
+}
+
 ?>

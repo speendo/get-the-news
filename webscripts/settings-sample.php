@@ -23,6 +23,7 @@
 ###########################################################################
 ### User Settings
 ###########################################################################
+
 ## RSS-Language (in the feeds head, "en" for english)
 $rssLanguage    = "";
 ## RSS-Copyright (you can enter your name here)
@@ -39,11 +40,28 @@ $rssIcon        = "";
 $rssURL         = "";
 ## Max items in feed (0 for no limit)
 $rssMaxItems    = 200;
-## style sheet (not working yet)
+## Style sheet (not working yet)
 $styleSheet     = "";
 ## Encryption key for download-links
 ## (you could leave this empty, but you shouldn't!)
 $encryptionKey  = "encryptionKey";
+
+#### If you use get-the-news to download newspapers (which you probably
+#### want to do), you might get problems with the content providers,
+#### namely the newspaper-owners, if you provide the newspapers public on
+#### the web. The following settings give you the possibility to keep your
+#### newspapers private. For this we use a pass phrase for the php-scripts.
+#### Additionally, you have to provide the full path of your
+#### newspaper-folder.
+####
+#### If you still want to provide the news public, just leave these
+#### settings empty.
+
+## absolute path to newspaper-folder
+$newspaperFolder  = "";
+## Pass phrase for php-Scripts (leave empty if they should be public)
+$passPhrase       = "";
+
 ###########################################################################
 ### End
 ###########################################################################

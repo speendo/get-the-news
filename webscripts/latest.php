@@ -25,13 +25,12 @@ include("functions.php");
 ###########################################################################
 ### General Settings
 ###########################################################################
-$folderPath = __DIR__ . "/";
-$folderURL  = dirname(curPageURL()) . "/";
-$rssDate    = date("r", time());
-@$feed      = $_GET['feed'];
-@$extension = $_GET['ext'];
-
-$mimeType = "application/epub+zip"; // because it's an .epub in this case
+$folderPath   = __DIR__ . "/";
+$folderURL    = dirname(curPageURL()) . "/";
+$rssDate      = date("r", time());
+@$feed        = $_GET['feed'];
+@$extension   = $_GET['ext'];
+@$inputPhrase = $_GET['pass'];
 
 ###########################################################################
 ### Computed Variables
@@ -62,6 +61,13 @@ if ($extension == "") {
 }
 
 $searchStatement = $contentFolderPath . $extension;
+
+## as this script is providing .epubs only, we set this mime type
+$mimeType = "application/epub+zip"; // because it's an .epub in this case
+
+## check passphrase
+checkPassPhrase();
+}
 
 ###########################################################################
 ### The items in the feed
