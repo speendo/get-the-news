@@ -23,6 +23,9 @@ include("functions.php");
 
 include("settings.php");
 
+## check passphrase
+checkPassPhrase();
+
 $path = decrypt($_GET['path'], $encryptionKey);
 $mimeType = $_GET['mimeType'];
 

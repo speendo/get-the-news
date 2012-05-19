@@ -30,12 +30,16 @@ $folderURL    = dirname(curPageURL()) . "/";
 $rssDate      = date("r", time());
 @$feed        = $_GET['feed'];
 @$extension   = $_GET['ext'];
-@$inputPhrase = $_GET['pass'];
 
 ###########################################################################
 ### Computed Variables
 ###########################################################################
+## folderPath
+if ($newspaperFolder != "") {
+	$folderURL = rtrim($newspaperFolder, "/") . "/";
+}
 
+## other Variables
 if ($feed == "") {
 	$feed = "*";
 	$contentFolderPath = $folderPath . $feed . "/";
@@ -67,7 +71,6 @@ $mimeType = "application/epub+zip"; // because it's an .epub in this case
 
 ## check passphrase
 checkPassPhrase();
-}
 
 ###########################################################################
 ### The items in the feed

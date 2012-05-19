@@ -117,38 +117,58 @@ function startDownload($path, $mimeType) {
 	exit();
 }
 
-function isPassPhraseCorrect($inputPhrase) {
+function isPassPhraseCorrect() {
+	@$inputPhrase = $_GET['pass'];
+	include("settings.php");
 	return $inputPhrase == $passPhrase;
 }
 
 function passPhraseForm($completeURL) {
+	## Don't forget any parameters here!
+	@$feed        = $_GET['feed'];
+	@$extension   = $_GET['ext'];
+	@$short       = $_GET['short'];
+	@$inputPhrase = $_GET['pass'];
+	
+	$theURL = parse_url(curPageURL());
+	$submitURL = $theURL[scheme] . "://" . $theURL[host] . $theURL[path];
+	
+	$message = "Passphrase incorrect! Please enter correct passphrase!";
+	if ($inputPhrase == "") {
+		$message = "Please enter passphrase!";
+	}
+	
 	echo("
-		\"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n
+		<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n
 		\"http://www.w3.org/TR/html4/strict.dtd\">\n
 		<html>\n
 		<head>\n
-		<title>Eingabefelder für Passwörter</title>\n
+		<title>Authentication</title>\n
 		</head>\n
 		<body>\n
 		\n
-		<h1>Nur nicht auf die Tastatur gucken lassen ... :-)</h1>\n
+		<p>$message</p>\n
 		\n
-		<form action=\"$completeURL\" method=\"get\">\n
-		<p>Kennwort:<br><input name=\"pass\" type=\"password\" size=\"20\" maxlength=\"40\"></p>\n
-		</form>\n
+		<form action=\"$submitURL\" method=\"get\">\n
+		
+		<input type=\"hidden\" name=\"feed\" value=\"$feed\">
+		<input type=\"hidden\" name=\"ext\" value=\"$ext\">
+		<input type=\"hidden\" name=\"short\" value=\"$short\">
+		
+		<p>Passphrase:<br><input name=\"pass\" type=\"text\" value=\"$inputPhrase\" size=\"20\" maxlength=\"40\"></p>\n
 		\n
 		<input type=\"submit\" value=\" Submit \">\n
 		\n
+		</form>\n
 		</body>\n
 		</html>\n
 	");
 }
 
 function checkPassPhrase() {
-if (!isPassPhraseCorrect($inputPhrase)) {
-	$completeURL = curPageURL() . "?feed=" . $feed . "&ext=" . $extension;
-	passPhraseForm($completeURL);
-	exit();
+	if (!isPassPhraseCorrect()) {
+		passPhraseForm($completeURL);
+		exit();
+	}
 }
-
 ?>

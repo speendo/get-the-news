@@ -43,22 +43,25 @@ $dc         = "http://purl.org/dc/elements/1.1/";
 ###########################################################################
 ### Computed Variables
 ###########################################################################
+## folderPath
+if ($newspaperFolder != "") {
+	$folderURL = rtrim($newspaperFolder, "/") . "/";
+}
+
+## other Variables
 if ($feed == "") {
 	$title = "RSS-Feed";
 	$feed = "*";
 	$contentFolderPath = $folderPath . $feed . "/";
-	$contentFolderURL  = $folderURL;
 	$pathLength = strlen($contentFolderPath) - 2;
 } else {
 	$title = ucwords($feed);
 	$contentFolderPath = realpath($folderPath . $feed . "/") . "/";
-	$contentFolderURL  = $folderURL . $feed . "/";
 	$pathLength = strlen($contentFolderPath);
 	if (strpos($contentFolderPath, $folderPath) !== 0) {
 		$title = "RSS-Feed";
 		$feed = "*";
 		$contentFolderPath = $folderPath . $feed . "/";
-		$contentFolderURL  = $folderURL;
 		$pathLength = strlen($contentFolderPath) - 2;
 	}
 }
@@ -71,7 +74,7 @@ if ($extension == "") {
 }
 
 $searchStatement       = $contentFolderPath . $extension;
-$searchStatementOutput = "Search results for \"" . $folderURL . $feed . "/" . $extension . "\"";
+$searchStatementOutput = "Search results for \"" . $feed . "/" . $extension . "\"";
 ## Mime Type (selected by extension - at the moment just epub)
 $mimeType              = "application/epub+zip";
 
@@ -82,6 +85,9 @@ if (in_array(strtolower($short), $trueValues)) {
 	$compactList = TRUE;
 }
 
+## check passphrase
+checkPassPhrase();
+
 ###########################################################################
 ### The items in the feed
 ###########################################################################
@@ -89,7 +95,7 @@ $lArticles = array();
 $cArticles = 0;
 
 $fileArray = glob($searchStatement);
-usort($fileArray, "asc_desc_by_mtime");
+usort($fileArray, "sort_desc_by_mtime");
 
 foreach($fileArray as $strFile) {
 	$cArticles++;
@@ -129,13 +135,8 @@ foreach($fileArray as $strFile) {
 	}
 
 	## Article Link
-	if (isRestrictedArea) {
-		$authFolderURL = parse_url($folderURL);
-		$strLink = $authFolderURL[scheme] . "://" . urlencode($_SERVER['PHP_AUTH_USER']) . ":" . urlencode($_SERVER['PHP_AUTH_PW']) . "@" . $authFolderURL[host] . $authFolderURL[path] . "download.php?path=" . urlencode(encrypt($strFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
-	} else {
-		$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
-	}
-	
+	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
+
 	# The Feeds last update
 	$rssDate = $strPubDate;
 	###################################################################
@@ -207,7 +208,7 @@ if ($rssIcon != "") {
 ###########################################################################
 ### The feed's heart ;-)
 ###########################################################################
-for ($iArticle = $lastArticle; $iArticle >= $firstArticle; $iArticle--) {
+for ($iArticle = $firstArticle; $iArticle <= $lastArticle; $iArticle++) {
 	echo $lArticles[$iArticle];
 }
 
