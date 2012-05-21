@@ -128,6 +128,7 @@ function passPhraseForm($completeURL) {
 	@$feed        = $_GET['feed'];
 	@$extension   = $_GET['ext'];
 	@$short       = $_GET['short'];
+	@$path        = $_GET['path'];
 	@$inputPhrase = $_GET['pass'];
 	
 	$theURL = parse_url(curPageURL());
@@ -154,6 +155,7 @@ function passPhraseForm($completeURL) {
 		<input type=\"hidden\" name=\"feed\" value=\"$feed\">
 		<input type=\"hidden\" name=\"ext\" value=\"$ext\">
 		<input type=\"hidden\" name=\"short\" value=\"$short\">
+		<input type=\"hidden\" name=\"path\" value=\"$path\">
 		
 		<p>Passphrase:<br><input name=\"pass\" type=\"text\" value=\"$inputPhrase\" size=\"20\" maxlength=\"40\"></p>\n
 		\n

@@ -26,7 +26,6 @@ include("functions.php");
 ### General Settings
 ###########################################################################
 $folderPath   = __DIR__ . "/";
-$folderURL    = dirname(curPageURL()) . "/";
 $rssDate      = date("r", time());
 @$feed        = $_GET['feed'];
 @$extension   = $_GET['ext'];
@@ -36,23 +35,20 @@ $rssDate      = date("r", time());
 ###########################################################################
 ## folderPath
 if ($newspaperFolder != "") {
-	$folderURL = rtrim($newspaperFolder, "/") . "/";
+	$folderPath = rtrim($newspaperFolder, "/") . "/";
 }
 
 ## other Variables
 if ($feed == "") {
 	$feed = "*";
 	$contentFolderPath = $folderPath . $feed . "/";
-	$contentFolderURL  = $folderURL;
 	$pathLength = strlen($contentFolderPath) - 2;
 } else {
 	$contentFolderPath = realpath($folderPath . $feed . "/") . "/";
-	$contentFolderURL  = $folderURL . $feed . "/";
 	$pathLength = strlen($contentFolderPath);
 	if (strpos($contentFolderPath, $folderPath) !== 0) {
 		$feed = "*";
 		$contentFolderPath = $folderPath . $feed . "/";
-		$contentFolderURL  = $folderURL;
 		$pathLength = strlen($contentFolderPath) - 2;
 	}
 }
@@ -75,9 +71,6 @@ checkPassPhrase();
 ###########################################################################
 ### The items in the feed
 ###########################################################################
-$lArticles = array();
-$cArticles = 0;
-
 $fileArray = glob($searchStatement);
 usort($fileArray, "sort_desc_by_mtime");
 

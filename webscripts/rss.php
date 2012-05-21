@@ -38,6 +38,7 @@ $rssDate    = date("r", time());
 @$feed      = $_GET['feed'];
 @$extension = $_GET['ext'];
 @$short     = $_GET['short'];
+@$pass      = $_GET['pass'];
 $dc         = "http://purl.org/dc/elements/1.1/";
 
 ###########################################################################
@@ -45,7 +46,7 @@ $dc         = "http://purl.org/dc/elements/1.1/";
 ###########################################################################
 ## folderPath
 if ($newspaperFolder != "") {
-	$folderURL = rtrim($newspaperFolder, "/") . "/";
+	$folderPath = rtrim($newspaperFolder, "/") . "/";
 }
 
 ## other Variables
@@ -135,7 +136,7 @@ foreach($fileArray as $strFile) {
 	}
 
 	## Article Link
-	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
+	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType) . "&amp;pass=" . urlencode($pass);
 
 	# The Feeds last update
 	$rssDate = $strPubDate;
