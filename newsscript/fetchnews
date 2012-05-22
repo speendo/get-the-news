@@ -1,5 +1,5 @@
 #!/bin/bash
-# fetchnews 1.0b2
+# fetchnews 1.0b3
 
 ###########################################################################
 ### Copyright: (2012) Marcel Jira
@@ -22,7 +22,7 @@
 ### along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###########################################################################
 
-#set -veux
+# set -vex
 
 ## help text
 help="
@@ -71,6 +71,14 @@ Options
                 if not specified in \"settings.conf\" file and not specified
                 as an option, \"/opt/calibre\" will be used per default
 
+  -u username   username for .recipe-file
+                some .recipe-files need a username and/or a password. You can
+                specify the username with this option
+
+  -k key        password for .recipe-file
+                some .recipe-files need a username and/or a password. You can
+                specify the password with this option
+
   -h            Print this help text
 "
 
@@ -87,10 +95,9 @@ source "$scriptDir/settings"
 tempFile=false
 clearDir=false
 clearOldDays=-1
-maxExecutionTime=-1
 
 ## get options
-while getopts ":f:d:p:o:m:tch" options
+while getopts ":f:d:p:o:u:k:tch" options
 do
 	case $options in
 		f ) fileName=$OPTARG
@@ -101,6 +108,10 @@ do
 		;;
 		o ) clearOldDays=$OPTARG
 		;;
+		u ) username=$OPTARG
+		;;
+		k ) password=$OPTARG
+		;;
 		t ) tempFile=true
 		;;
 		c ) clearDir=true
@@ -109,15 +120,15 @@ do
 		exit 0
 		;;
 		\? ) echo "$help"
-	        exit 1
-	        ;;
+		exit 1
+		;;
 	esac
 done
 
 shift $(($OPTIND - 1))
 
 ## get filename (if not provided before)
-if [ ! "$fileName" ]
+if [ -z "$fileName" ]
 then
 	fileName=$1
 fi
@@ -134,6 +145,8 @@ if [ "$calibrePath" == "" ]
 then
 	calibrePath="/opt/calibre"
 fi
+## remove trailing "/" from $calibrePath
+calibrePath=${calibrePath%/}
 
 if [ ! -f "$calibrePath/ebook-convert" ]
 then
@@ -213,9 +226,7 @@ then
 fi
 
 ## let calibre do it's work
-echo $calibrePath"ebook-convert "$fileName $directory/$storeFileName-$timeStamp.epub > /dev/null
-
-${calibrePath}/ebook-convert $fileName $directory/$storeFileName-$timeStamp.epub > /dev/null
+${calibrePath}/ebook-convert $fileName $directory/$storeFileName-$timeStamp.epub --username $username --password $password > /dev/null
 ${calibrePath}/ebook-meta $directory/$storeFileName-$timeStamp.epub --to-opf=$directory"/"$storeFileName-$timeStamp.opf > /dev/null
 
 ## if option "-c" was passed, remove all temporary files in corresponding folder 
