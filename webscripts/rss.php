@@ -155,7 +155,7 @@ foreach($fileArray as $strFile) {
 	$strArticle .= "      <pubDate>$strPubDate</pubDate>\r\n";
 	$strArticle .= "      <source url=\"$rssURL\">$rssCopyright</source>\r\n";
 	$strArticle .= "    </item>\r\n";
-	$lArticles[] = $strArticle;	
+	$lArticles[] = $strArticle;
 }
 
 $lastArticle = $cArticles - 1;

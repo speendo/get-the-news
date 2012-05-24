@@ -173,4 +173,16 @@ function checkPassPhrase() {
 		exit();
 	}
 }
+
+function replaceFirst($input, $search, $replacement){
+	$pos = stripos($input, $search);
+	if($pos === false) {
+		return $input;
+	}
+	else{
+		$result = substr_replace($input, $replacement, $pos, strlen($search));
+		return $result;
+	}
+}
+
 ?>
