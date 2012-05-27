@@ -145,8 +145,13 @@ function passPhraseForm($completeURL) {
 		<html>\n
 		<head>\n
 		<title>Authentication</title>\n
+		<script type=\"text/javascript\">\n
+		function setFocus() {\n
+		    document.getElementById(\"pass\").focus();\n
+		}\n
+		</script>\n
 		</head>\n
-		<body>\n
+		<body onload=\"setFocus()\">\n
 		\n
 		<p>$message</p>\n
 		\n
@@ -157,7 +162,7 @@ function passPhraseForm($completeURL) {
 		<input type=\"hidden\" name=\"short\" value=\"$short\">
 		<input type=\"hidden\" name=\"path\" value=\"$path\">
 		
-		<p>Passphrase:<br><input name=\"pass\" type=\"text\" value=\"$inputPhrase\" size=\"20\" maxlength=\"40\"></p>\n
+		<p>Passphrase:<br><input name=\"pass\" type=\"text\" id=\"pass\" value=\"$inputPhrase\" size=\"20\" maxlength=\"40\"></p>\n
 		\n
 		<input type=\"submit\" value=\" Submit \">\n
 		\n
