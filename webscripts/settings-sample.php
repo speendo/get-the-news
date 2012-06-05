@@ -24,45 +24,106 @@
 ### User Settings
 ###########################################################################
 
-## RSS-Language (in the feeds head, "en" for english)
-$rssLanguage    = "";
-## RSS-Copyright (you can enter your name here)
-$rssCopyright   = "";
-## RSS-Generator (change if desired)
-$rssGenerator   = "get-the-news";
-## RSS-Time-to-live (interval to refresh feed)
-$rssTtl         = "180";
-## Path to RSS-logo (png, gif, jpg, etc. you could also leave this empty)
-$rssLogo        = "";
-## Path to RSS-icon (ico, jpg, etc. you could also leave this empty)
-$rssIcon        = "";
-## RSS-URL
-$rssURL         = "";
-## Max items in feed (0 for no limit)
-$rssMaxItems    = 200;
-## Style sheet (not working yet)
-$styleSheet     = "";
-## Encryption key for download-links
-## (you could leave this empty, but you shouldn't!)
-$encryptionKey  = "encryptionKey";
+## Title
+$title            = "get-the-news";
 
-#### If you use get-the-news to download newspapers (which you probably
-#### want to do), you might get problems with the content providers,
-#### namely the newspaper-owners, if you provide the newspapers public on
-#### the web. The following settings give you the possibility to keep your
-#### newspapers private. For this we use a pass phrase for the php-scripts.
-#### Additionally, you have to provide the full path of your
-#### newspaper-folder.
-####
-#### If you still want to provide the news public, just leave these
-#### settings empty.
+## RSS-Language (in the feeds head, "en" for english)
+$rssLanguage      = "";
+
+## RSS-Copyright (you can enter your name here)
+$rssCopyright     = "Marcel";
+
+## RSS-Generator (change if desired)
+$rssGenerator     = "get-the-news";
+
+## RSS-Time-to-live (interval to refresh feed)
+$rssTtl           = "180";
+
+## Max items in feed (0 for no limit)
+$rssMaxItems      = 0;
+
+## Path to RSS-logo (png, gif, jpg, etc. you could also leave this empty)
+$rssLogo          = "";
+
+## Path to RSS-icon (ico, jpg, etc. you could also leave this empty)
+$rssIcon          = "";
+
+## RSS-URL
+$rssURL           = "";
 
 ## absolute path to newspaper-folder
 $newspaperFolder  = "";
-## Pass phrase for php-Scripts (leave empty if they should be public)
-$passPhrase       = "";
+
+## Style sheet (not working yet)
+$styleSheet       = "";
+
+## Security-Settings
+
+## Encryption key for download-links
+## (you could leave this empty, but you shouldn't!)
+$encryptionKey  = "narf";
+
+## Security method:
+## "http"   - HTTP-authentication (best)
+## "phrase" - Passphrase-authentication (not secure but better than nothing if
+##            HTTP-authentication is not supported by your server)
+## "both"   - HTTP-authentication and passphrase-authentication (to be honest,
+##            you don't need both)
+## "none"   - no security (you shouldn't do that)
+$secMethod = "http";
+
+## HTTP-authentication users and passwords (if you use HTTP-Authentication)
+## fill in like this
+## $users     = array(
+##              "name1" => "password2",
+##              "name2" => "password2"
+##              );
+
+$users     = array(
+             
+             );
+
+## Passphrase (if you use passphrase-authentication)
+$passPhrase       = "phrase";
 
 ###########################################################################
 ### End
 ###########################################################################
+
+$httpOn = FALSE;
+$phraseOn = FALSE;
+
+switch ($secMethod) {
+	case "http":
+	$httpOn = TRUE;
+	break;
+
+	case "phrase":
+	$httpOn = TRUE;
+	break;
+
+	case "both":
+	$httpOn = TRUE;
+	$phraseOn = TRUE;
+	break;
+
+	case "none":
+	break;
+
+	default:
+	exit("No valid value for \$secMethod provided");
+}
+
+if ($httpOn == TRUE && !$users) {
+	exit("No valid HTTP-users specified");
+}
+
+if ($phraseOn == TRUE && $passPhrase == "") {
+	exit("No valid passphrase specified");
+}
+
+if ($newspaperFolder == "") {
+	exit("\$newspaperFolder not specified");
+}
+
 ?>

@@ -1,13 +1,16 @@
 <?php
 include("functions.php");
 
-@$pass = $_GET['pass'];
-## check passphrase
-checkPassPhrase();
+if ($phraseOn) {
+	@$pass = $_GET['pass'];
+}
+
+## authenticate
+authenticate();
 
 $theTitle = $title;
 if ($rssCopyright != "") {
-$theTitle .= " by $rssCopyright";
+	$theTitle .= " by $rssCopyright";
 }
 
 ## folderPath
@@ -27,12 +30,21 @@ usort($dirArray, "sort_desc_by_mtime");
 $list = array();
 foreach($dirArray as $curDir) {
 	$curFeed = replaceFirst($curDir, $folderPath, "");
-	$output = "
-		      <li>$curFeed 
-		<a href=\"latest.php?feed=$curFeed&pass=$pass\">[Download latest file]</a> 
-		<a href=\"rss.php?feed=$curFeed&pass=$pass\">[RSS-Feed]</a>
-		</li>
-	";
+	if ($phraseOn) {
+		$output = "
+			      <li>$curFeed 
+			<a href=\"latest.php?feed=$curFeed&pass=$pass\">[Download latest file]</a> 
+			<a href=\"rss.php?feed=$curFeed&pass=$pass\">[RSS-Feed]</a>
+			</li>
+		";
+	} else {
+		$output = "
+			      <li>$curFeed 
+			<a href=\"latest.php?feed=$curFeed\">[Download latest file]</a> 
+			<a href=\"rss.php?feed=$curFeed\">[RSS-Feed]</a>
+			</li>
+		";
+	}
 	$list[] = $output;
 }
 $list[] = "

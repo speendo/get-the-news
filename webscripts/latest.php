@@ -25,18 +25,19 @@ include("functions.php");
 ###########################################################################
 ### General Settings
 ###########################################################################
-$folderPath   = __DIR__ . "/";
 $rssDate      = date("r", time());
 @$feed        = $_GET['feed'];
 @$extension   = $_GET['ext'];
+if ($phraseOn) {
+	@$pass = $_GET['pass'];
+}
 
 ###########################################################################
 ### Computed Variables
 ###########################################################################
+
 ## folderPath
-if ($newspaperFolder != "") {
-	$folderPath = rtrim($newspaperFolder, "/") . "/";
-}
+$folderPath = rtrim($newspaperFolder, "/") . "/";
 
 ## other Variables
 if ($feed == "") {
@@ -65,8 +66,8 @@ $searchStatement = $contentFolderPath . $extension;
 ## as this script is providing .epubs only, we set this mime type
 $mimeType = "application/epub+zip"; // because it's an .epub in this case
 
-## check passphrase
-checkPassPhrase();
+## authenticate
+authenticate();
 
 ###########################################################################
 ### The items in the feed
@@ -78,5 +79,14 @@ $newestFile = array_slice($fileArray, 0, 1);
 $newestFile = $newestFile[0];
 
 ## start download
-startDownload($newestFile, $mimeType);
+$strLink = "";
+
+$strFileName = replaceFirst($newestFile, $folderPath, "");
+if ($phraseOn) {
+	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType) . "&amp;pass=" . urlencode($pass);
+} else {
+	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
+}
+header("Location: $strLink");
+# startDownload($newestFile, $mimeType);
 ?>

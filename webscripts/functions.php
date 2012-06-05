@@ -93,12 +93,20 @@ function decrypt($string, $encryptionKey) {
 }
 
 function startDownload($path, $mimeType) {
-	if(!file_exists($path)) {
+
+	include("settings.php");
+
+	## folderPath
+	$folderPath = rtrim($newspaperFolder, "/") . "/";
+
+	$contentFolderPath = realpath($folderPath . $path);
+
+	if(!file_exists($contentFolderPath)) {
 		// File doesn't exist, output error
 		exit('file not found');
 	} else {
-		$size = filesize($path);
-		$file = basename($path);
+		$size = filesize($contentFolderPath);
+		$file = basename($contentFolderPath);
 
 		// Set headers
 		header("Pragma: public"); // required
@@ -111,7 +119,7 @@ function startDownload($path, $mimeType) {
 		header("Content-Transfer-Encoding: binary");
 		header("Content-Length: $size");
 		// Read the file from disk
-		readfile($path);
+		readfile($contentFolderPath);
 	}
 
 	exit();
@@ -172,13 +180,6 @@ function passPhraseForm($completeURL) {
 	");
 }
 
-function checkPassPhrase() {
-	if (!isPassPhraseCorrect()) {
-		passPhraseForm($completeURL);
-		exit();
-	}
-}
-
 function replaceFirst($input, $search, $replacement){
 	$pos = stripos($input, $search);
 	if($pos === false) {
@@ -187,6 +188,48 @@ function replaceFirst($input, $search, $replacement){
 	else{
 		$result = substr_replace($input, $replacement, $pos, strlen($search));
 		return $result;
+	}
+}
+
+function wwwAuthenticate() {
+	include("settings.php");
+
+	$theTitle = $title;
+	if ($rssCopyright != "") {
+		$theTitle .= " by $rssCopyright";
+	}
+
+	if (!isset($_SERVER['PHP_AUTH_USER'])) {
+		header('WWW-Authenticate: Basic realm="' . $theTitle . '"');
+		exit('This page requires authentication!');
+	}
+
+	if (!isset($users[$_SERVER['PHP_AUTH_USER']])) {
+		header('HTTP/1.0 401 Unauthorized');
+		header('WWW-Authenticate: Basic realm="' . $theTitle . '"');
+		exit('Unauthorized!');
+	} elseif ($users[$_SERVER['PHP_AUTH_USER']] != $_SERVER['PHP_AUTH_PW']) {
+		header('HTTP/1.1 401 Unauthorized');
+		header('WWW-Authenticate: Basic realm="' . $theTitle . '"');
+		exit('Unauthorized!');
+	}
+}
+
+function checkPassPhrase() {
+	if (!isPassPhraseCorrect()) {
+		passPhraseForm($completeURL);
+		exit();
+	}
+}
+
+function authenticate() {
+	include("settings.php");
+
+	if ($httpOn) {
+		wwwAuthenticate();
+	}
+	if ($phraseOn) {
+		checkPassPhrase();
 	}
 }
 

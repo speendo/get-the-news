@@ -23,8 +23,13 @@ include("functions.php");
 
 include("settings.php");
 
-## check passphrase
-checkPassPhrase();
+## check passphrase (as some Android-devices have troubles with downloading
+## files locked with HTTP-authentication, only passphrase authentication is
+## switched on for this file. When an encryptionKey is specified this is not
+## really a security issue)
+if ($phraseOn) {
+	checkPassPhrase();
+}
 
 $path = decrypt($_GET['path'], $encryptionKey);
 $mimeType = $_GET['mimeType'];

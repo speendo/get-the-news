@@ -32,22 +32,22 @@ include("functions.php");
 ###########################################################################
 ### General Settings
 ###########################################################################
-$folderPath = __DIR__ . "/";
 $folderURL  = dirname(curPageURL()) . "/";
 $rssDate    = date("r", time());
 @$feed      = $_GET['feed'];
 @$extension = $_GET['ext'];
 @$short     = $_GET['short'];
-@$pass      = $_GET['pass'];
+if ($phraseOn) {
+	@$pass = $_GET['pass'];
+}
 $dc         = "http://purl.org/dc/elements/1.1/";
 
 ###########################################################################
 ### Computed Variables
 ###########################################################################
+
 ## folderPath
-if ($newspaperFolder != "") {
-	$folderPath = rtrim($newspaperFolder, "/") . "/";
-}
+$folderPath = rtrim($newspaperFolder, "/") . "/";
 
 ## other Variables
 if ($feed == "") {
@@ -86,8 +86,8 @@ if (in_array(strtolower($short), $trueValues)) {
 	$compactList = TRUE;
 }
 
-## check passphrase
-checkPassPhrase();
+## authenticate
+authenticate();
 
 ###########################################################################
 ### The items in the feed
@@ -136,7 +136,12 @@ foreach($fileArray as $strFile) {
 	}
 
 	## Article Link
-	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFile, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType) . "&amp;pass=" . urlencode($pass);
+	$strFileName = replaceFirst($strFile, $folderPath, "");
+	if ($phraseOn) {
+		$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType) . "&amp;pass=" . urlencode($pass);
+	} else {
+		$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
+	}
 
 	# The Feeds last update
 	$rssDate = $strPubDate;
