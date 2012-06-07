@@ -83,10 +83,9 @@ $strLink = "";
 
 $strFileName = replaceFirst($newestFile, $folderPath, "");
 if ($phraseOn) {
-	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType) . "&amp;pass=" . urlencode($pass);
+	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&mimeType=" . urlencode($mimeType) . "&pass=" . urlencode($pass);
 } else {
-	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
+	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&mimeType=" . urlencode($mimeType);
 }
 header("Location: $strLink");
-# startDownload($newestFile, $mimeType);
 ?>

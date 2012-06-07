@@ -34,8 +34,6 @@ if ($phraseOn) {
 $path = decrypt($_GET['path'], $encryptionKey);
 $mimeType = $_GET['mimeType'];
 
-// echo $path;
-
 startDownload($path, $mimeType);
 
 ?>
