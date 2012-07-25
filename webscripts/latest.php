@@ -22,6 +22,10 @@
 
 include("functions.php");
 
+## start php-session
+startSessionNoCookies();
+$_SESSION['startTime'] = time();
+
 ###########################################################################
 ### General Settings
 ###########################################################################
@@ -82,10 +86,8 @@ $newestFile = $newestFile[0];
 $strLink = "";
 
 $strFileName = replaceFirst($newestFile, $folderPath, "");
-if ($phraseOn) {
-	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&mimeType=" . urlencode($mimeType) . "&pass=" . urlencode($pass);
-} else {
-	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&mimeType=" . urlencode($mimeType);
-}
+$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&mimeType=" . urlencode($mimeType) . "&" . session_name() . "=" . session_id();
+
 header("Location: $strLink");
+
 ?>

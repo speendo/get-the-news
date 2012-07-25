@@ -29,6 +29,10 @@
 
 include("functions.php");
 
+## start php-session
+startSessionNoCookies();
+$_SESSION['startTime'] = time();
+
 ###########################################################################
 ### General Settings
 ###########################################################################
@@ -137,11 +141,7 @@ foreach($fileArray as $strFile) {
 
 	## Article Link
 	$strFileName = replaceFirst($strFile, $folderPath, "");
-	if ($phraseOn) {
-		$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType) . "&amp;pass=" . urlencode($pass);
-	} else {
-		$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType);
-	}
+	$strLink = $folderURL . "download.php?path=" . urlencode(encrypt($strFileName, $encryptionKey)) . "&amp;mimeType=" . urlencode($mimeType) . "&amp;" . session_name() . "=" . session_id();
 
 	# The Feeds last update
 	$rssDate = $strPubDate;

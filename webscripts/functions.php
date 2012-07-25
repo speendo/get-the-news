@@ -28,6 +28,11 @@ include("settings.php");
 ### Helper Functions
 ###########################################################################
 
+function startSessionNoCookies() {
+	ini_set("session.use_only_cookies", "0");
+	session_start();
+}
+
 function str_lreplace($search, $replace, $subject) {
 	$pos = strrpos($subject, $search);
 
@@ -96,6 +101,26 @@ function startDownload($path, $mimeType) {
 
 	include("settings.php");
 
+	## sessions enabled?
+	if ($sessionsOn == TRUE) {
+		## check session
+		startSessionNoCookies();
+		## get session
+		session_id($_GET[session_name()]);
+
+		## check session
+		if (!isset($_SESSION)) {
+			session_destroy();
+			exit("Session invalid (or expired) go back and try again");
+		} elseif (!isset($_SESSION['startTime'])) {
+			session_destroy();
+			exit("Session start time not set - go back and try again");
+		} elseif ((time() - $_SESSION['startTime']) > $sessionTimeout) {
+			session_destroy();
+			exit("Session expired - go back and try again");
+		}
+	}
+
 	## folderPath
 	$folderPath = rtrim($newspaperFolder, "/") . "/";
 
@@ -103,7 +128,7 @@ function startDownload($path, $mimeType) {
 
 	if(!file_exists($contentFolderPath)) {
 		// File doesn't exist, output error
-		exit('file not found');
+		exit('File not found');
 	} else {
 		$size = filesize($contentFolderPath);
 		$file = basename($contentFolderPath);
@@ -121,6 +146,9 @@ function startDownload($path, $mimeType) {
 		// Read the file from disk
 		readfile($contentFolderPath);
 	}
+
+	## quit session
+	session_destroy();
 
 	exit();
 }
